@@ -79,7 +79,7 @@ class AccountsStore: ObservableObject {
             signer: account2Signer,
             provider: provider
         )
-
+        
         self.accounts = [account1, account2]
         self.accountBalances = [0, 0]
     }

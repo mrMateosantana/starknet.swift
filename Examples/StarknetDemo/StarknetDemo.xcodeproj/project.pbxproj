@@ -13,6 +13,7 @@
 		1D63E1A0296DC63B0080CA19 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D63E19F296DC63B0080CA19 /* Assets.xcassets */; };
 		1D63E1A3296DC63B0080CA19 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D63E1A2296DC63B0080CA19 /* Preview Assets.xcassets */; };
 		1D63E1AB296DC6780080CA19 /* Starknet in Frameworks */ = {isa = PBXBuildFile; productRef = 1D63E1AA296DC6780080CA19 /* Starknet */; };
+		973BEF5D2B7138A3008741FC /* Starknet in Frameworks */ = {isa = PBXBuildFile; productRef = 973BEF5C2B7138A3008741FC /* Starknet */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				973BEF5D2B7138A3008741FC /* Starknet in Frameworks */,
 				1D63E1AB296DC6780080CA19 /* Starknet in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -92,6 +94,7 @@
 			name = StarknetDemo;
 			packageProductDependencies = (
 				1D63E1AA296DC6780080CA19 /* Starknet */,
+				973BEF5C2B7138A3008741FC /* Starknet */,
 			);
 			productName = StarknetDemo;
 			productReference = 1D63E198296DC6390080CA19 /* StarknetDemo.app */;
@@ -281,7 +284,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"StarknetDemo/Preview Content\"";
-				DEVELOPMENT_TEAM = 322X5FLLU2;
+				DEVELOPMENT_TEAM = 25A3S634LV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StarknetDemo/Info.plist;
@@ -311,7 +314,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"StarknetDemo/Preview Content\"";
-				DEVELOPMENT_TEAM = 322X5FLLU2;
+				DEVELOPMENT_TEAM = 25A3S634LV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StarknetDemo/Info.plist;
@@ -369,6 +372,11 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		1D63E1AA296DC6780080CA19 /* Starknet */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1D63E1A9296DC6780080CA19 /* XCRemoteSwiftPackageReference "starknet.swift" */;
+			productName = Starknet;
+		};
+		973BEF5C2B7138A3008741FC /* Starknet */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 1D63E1A9296DC6780080CA19 /* XCRemoteSwiftPackageReference "starknet.swift" */;
 			productName = Starknet;

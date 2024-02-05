@@ -675,3 +675,27 @@ extension StarknetTransaction {
         }
     }
 }
+
+import BigInt
+import Foundation
+
+// An extension to StarknetInvokeTransactionV3 to add a new initializer
+extension StarknetInvokeTransactionV3 {
+    public init(senderAddress: Felt, calldata: StarknetCalldata, signature: StarknetSignature, l1ResourceBounds: StarknetResourceBounds, nonce: Felt, forFeeEstimation: Bool = false, hash: Felt? = nil, accountDeploymentData: StarknetAccountDeploymentData) {
+        self.senderAddress = senderAddress
+        self.calldata = calldata
+        self.signature = signature
+        self.nonce = nonce
+        self.version = StarknetInvokeTransactionV3.computeVersion(3, forFeeEstimation: forFeeEstimation)
+        self.hash = hash
+        // As of Starknet 0.13, most of v3 fields have hardcoded values.
+        self.resourceBounds = StarknetResourceBoundsMapping(l1Gas: l1ResourceBounds)
+        self.tip = .zero
+        self.paymasterData = []
+        self.accountDeploymentData = accountDeploymentData
+        self.nonceDataAvailabilityMode = .l1
+        self.feeDataAvailabilityMode = .l1
+    }
+}
+
+
