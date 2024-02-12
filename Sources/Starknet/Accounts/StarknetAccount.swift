@@ -76,6 +76,48 @@ public class StarknetAccount: StarknetAccountProtocol {
 
         return makeDeployAccountTransactionV1(classHash: classHash, salt: salt, calldata: calldata, signature: signature, params: params, forFeeEstimation: forFeeEstimation)
     }
+    
+    public func signDeployAccountV1(classHash: Felt, calldata: StarknetCalldata, salt: Felt, params: StarknetDeployAccountParamsV1, forFeeEstimation: Bool, impl_hash: Felt?) async throws -> StarknetDeployAccountTransactionV1 {
+        let transaction = makeDeployAccountTransactionV1(classHash: classHash, salt: salt, calldata: calldata, signature: [], params: params, forFeeEstimation: forFeeEstimation)
+
+        let chainId = try await provider.getChainId()
+ 
+        // Transaction hash
+        let hash = StarknetTransactionHashCalculator.computeHash(of: transaction, chainId: chainId)
+        let signature = try signer.sign(transactionHash: hash)
+        let temp_privkey = Felt(53142292297)
+        let temp_pubkey = try StarknetCurve.getPublicKey(privateKey: temp_privkey)
+        // Sign the transaction hash
+        let signatureOnHash = try StarknetCurve.sign(privateKey: temp_privkey, hash: hash)
+
+        // Aux Data
+        let secp256r1_keypair: Felt = 0
+        let is_webauthn: Felt = 0
+        let multisig_threshold: Felt = 0
+        let withdrawal_limit_low: Felt = 0
+        let fee_rate: Felt = 0
+
+        let auxiliaryData = [secp256r1_keypair, is_webauthn, multisig_threshold, withdrawal_limit_low, fee_rate]
+        let auxDataHash = StarknetPoseidon.poseidonHash(auxiliaryData)
+
+        // Sign the auxiliary data hash
+        let signatureOnAuxData = try StarknetCurve.sign(privateKey: temp_privkey, hash: auxDataHash)
+
+        // Construct the full signature array
+        var fullSignature: [Felt] = signatureOnHash.toArray()
+        if let implHash = impl_hash {
+            fullSignature.append(implHash)
+        }
+
+        fullSignature += auxiliaryData
+        fullSignature.append(chainId)
+        fullSignature.append(signatureOnAuxData.r)
+        fullSignature.append(signatureOnAuxData.s)
+
+        let result = try! StarknetCurve.verify(publicKey: temp_pubkey, hash: auxDataHash, r: signatureOnAuxData.r, s: signatureOnAuxData.s)
+        print(fullSignature)
+        return makeDeployAccountTransactionV1(classHash: classHash, salt: salt, calldata: calldata, signature: fullSignature, params: params, forFeeEstimation: true)
+    }
 
     public func signDeployAccountV3(classHash: Felt, calldata: StarknetCalldata, salt: Felt, params: StarknetDeployAccountParamsV3, forFeeEstimation: Bool) async throws -> StarknetDeployAccountTransactionV3 {
         let transaction = makeDeployAccountTransactionV3(classHash: classHash, salt: salt, calldata: calldata, signature: [], params: params, forFeeEstimation: forFeeEstimation)
@@ -151,6 +193,13 @@ public class StarknetAccount: StarknetAccountProtocol {
     public func estimateDeployAccountFeeV1(classHash: Felt, calldata: StarknetCalldata, salt: Felt, nonce: Felt, skipValidate: Bool) async throws -> StarknetFeeEstimate {
         let params = StarknetDeployAccountParamsV1(nonce: nonce, maxFee: 0)
         let signedTransaction = try await signDeployAccountV1(classHash: classHash, calldata: calldata, salt: salt, params: params, forFeeEstimation: true)
+
+        return try await provider.estimateFee(for: signedTransaction, simulationFlags: skipValidate ? [.skipValidate] : [])
+    }
+    
+    public func estimateDeployAccountFeeV1(classHash: Felt, calldata: StarknetCalldata, salt: Felt, nonce: Felt, skipValidate: Bool, impl_hash: Felt?) async throws -> StarknetFeeEstimate {
+        let params = StarknetDeployAccountParamsV1(nonce: nonce, maxFee: 0)
+        let signedTransaction = try await signDeployAccountV1(classHash: classHash, calldata: calldata, salt: salt, params: params, forFeeEstimation: true, impl_hash: impl_hash)
 
         return try await provider.estimateFee(for: signedTransaction, simulationFlags: skipValidate ? [.skipValidate] : [])
     }
