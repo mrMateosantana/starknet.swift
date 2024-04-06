@@ -129,7 +129,7 @@ public protocol StarknetAccountProtocol {
     ///  - skipValidate: flag indicating whether validation of the transaction should be skipped
     ///
     /// - Returns: struct containing fee estimate
-    func estimateDeployAccountFeeV1(classHash: Felt, calldata: StarknetCalldata, salt: Felt, nonce: Felt, skipValidate: Bool, impl_hash: Felt?) async throws -> StarknetFeeEstimate
+    func estimateDeployAccountFeeV1(classHash: Felt, calldata: StarknetCalldata, salt: Felt, nonce: Felt, skipValidate: Bool, impl_hash: Felt?, privateKey: Felt) async throws -> StarknetFeeEstimate
 
     /// Estimate fee for a deploy account transaction v3
     ///
@@ -141,6 +141,8 @@ public protocol StarknetAccountProtocol {
     ///  - skipValidate: flag indicating whether validation of the transaction should be skipped
     ///
     /// - Returns: struct containing fee estimate
+    func estimateDeployAccountFeeV32(classHash: Felt, calldata: StarknetCalldata, salt: Felt, nonce: Felt, skipValidate: Bool, privatekey: Felt) async throws -> StarknetFeeEstimate
+    
     func estimateDeployAccountFeeV3(classHash: Felt, calldata: StarknetCalldata, salt: Felt, nonce: Felt, skipValidate: Bool) async throws -> StarknetFeeEstimate
 
     /// Get current nonce of the account
@@ -388,8 +390,8 @@ public extension StarknetAccountProtocol {
     ///  - nonce: nonce of the account to be deployed
     ///
     /// - Returns: struct containing fee estimate
-    func estimateDeployAccountFeeV1(classHash: Felt, calldata: StarknetCalldata, salt: Felt, nonce: Felt = .zero, impl_hash: Felt?) async throws -> StarknetFeeEstimate {
-        try await estimateDeployAccountFeeV1(classHash: classHash, calldata: calldata, salt: salt, nonce: nonce, skipValidate: false, impl_hash: impl_hash)
+    func estimateDeployAccountFeeV1(classHash: Felt, calldata: StarknetCalldata, salt: Felt, nonce: Felt = .zero, impl_hash: Felt?, privateKey: Felt) async throws -> StarknetFeeEstimate {
+        try await estimateDeployAccountFeeV1(classHash: classHash, calldata: calldata, salt: salt, nonce: nonce, skipValidate: false, impl_hash: impl_hash, privateKey: privateKey)
     }
 
     /// Estimate fee for a deploy account transaction v3
@@ -401,7 +403,11 @@ public extension StarknetAccountProtocol {
     ///  - nonce: nonce of the account to be deployed
     ///
     /// - Returns: struct containing fee estimate
-    func estimateDeployAccountFeeV3(classHash: Felt, calldata: StarknetCalldata, salt: Felt, nonce: Felt = .zero) async throws -> StarknetFeeEstimate {
+    func estimateDeployAccountFeeV32(classHash: Felt, calldata: StarknetCalldata, salt: Felt, nonce: Felt = .zero, privatekey: Felt) async throws -> StarknetFeeEstimate {
+        try await estimateDeployAccountFeeV32(classHash: classHash, calldata: calldata, salt: salt, nonce: nonce, skipValidate: false, privatekey: privatekey)
+    }
+    
+    func estimateDeployAccountFeeV3(classHash: Felt, calldata: StarknetCalldata, salt: Felt, nonce: Felt = .zero, privatekey: Felt) async throws -> StarknetFeeEstimate {
         try await estimateDeployAccountFeeV3(classHash: classHash, calldata: calldata, salt: salt, nonce: nonce, skipValidate: false)
     }
 }

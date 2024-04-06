@@ -33,6 +33,10 @@ public class StarknetProvider: StarknetProviderProtocol {
         }
         self.init(url: url, urlSession: urlSession)
     }
+    
+    public func getUrl()-> URL {
+        return self.url
+    }
 
     private func makeRequest<U>(method: JsonRpcMethod, params: some Encodable = EmptyParams(), receive _: U.Type) async throws -> U where U: Decodable {
         let rpcPayload = JsonRpcPayload(method: method, params: params)
